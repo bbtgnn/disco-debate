@@ -64,8 +64,9 @@
 			// Creating block
 			const block = new Block(blockID, text ? text : null, referencesID);
 
-			// Adding block
+			// Adding block and references
 			dataManager.addBlock(block);
+			dataManager.addReferences(references);
 
 			// Closing window
 			closeAddBlock();
