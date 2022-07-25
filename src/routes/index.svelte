@@ -5,10 +5,9 @@
 	import BlockUI from '$lib/components/block.svelte';
 	import ReferenceUI from '$lib/components/reference.svelte';
 
-	import { nanoid } from 'nanoid';
 	import { DataManager } from '$lib/classes/dataManager';
-	import { Reference } from '$lib/classes/reference';
-	import { Block } from '$lib/classes/block';
+	import type { Reference } from '$lib/classes/reference';
+	import type { Block } from '$lib/classes/block';
 
 	import Add from 'carbon-icons-svelte/lib/Add.svelte';
 
@@ -55,18 +54,17 @@
 
 	function addBlock() {
 		if (canAddBlock && dataManager) {
-			// Block ID
-			let blockID = nanoid(5);
+			// Adding references
+			references.forEach((r) => {
+				dataManager.addReference(r);
+			});
 
 			// Getting list with all the references IDs
 			const referencesID: Array<string> = references.map((r) => r.ID);
 
-			// Creating block
-			const block = new Block(blockID, text ? text : null, referencesID);
-
-			// Adding block and references
+			// Creating and adding block
+			const block = dataManager.createBlock(text, referencesID);
 			dataManager.addBlock(block);
-			dataManager.addReferences(references);
 
 			// Closing window
 			closeAddBlock();
@@ -79,18 +77,18 @@
 
 	function addReference(block: Block, sel: Selection | null) {
 		if (addingBlock && sel && sel.toString() !== '') {
-			references = [
-				...references,
-				new Reference(
-					nanoid(5),
-					block.ID,
-					{
-						start: sel.anchorOffset,
-						end: sel.focusOffset
-					},
-					sel.toString()
-				)
-			];
+			// Creating reference
+			const ref = dataManager.createReference(
+				block.ID,
+				{
+					start: sel.anchorOffset,
+					end: sel.focusOffset
+				},
+				sel.toString()
+			);
+
+			// Adding to selection
+			references = [...references, ref];
 		}
 	}
 
@@ -117,7 +115,7 @@
 			"
 		>
 			<!-- The column -->
-			<div class="w-[400px] space-y-4 pr-4">
+			<div class="w-[500px] space-y-4 pr-4">
 				{#each $data.blocks as block}
 					<BlockUI
 						{block}
