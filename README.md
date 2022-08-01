@@ -1,5 +1,8 @@
 # ToDo
 
+- lista delle citazioni a lato
+- votare le citazioni
+
 - Quando si clicca su una card si mostrano anche le altre card connesse
 - Ci deve essere un sistema per votare le card o dare un positivo negativo
   - Il positivo e negativo potrebbe essere dato anche dall'AI

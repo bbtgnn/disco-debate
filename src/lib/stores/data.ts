@@ -1,4 +1,4 @@
 import { DataStructure } from '$lib/classes/dataStructure';
-import { writable } from 'svelte-local-storage-store';
+import { writable as writablels } from 'svelte-local-storage-store';
 
-export const data = writable<DataStructure>('data', new DataStructure());
+export const data = writablels<DataStructure>('data', new DataStructure());

@@ -1,20 +1,13 @@
-// import type { BlockLink } from './blockLink';
-
 export class Block {
 	ID: string;
 	text: string | null;
-	refersTo: Array<string>;
-	referredToBy: Array<string>;
+	references: Array<string>;
+	depth: number;
 
-	constructor(
-		id: string,
-		text: string | null = null,
-		refersTo: Array<string> = [],
-		referredToBy: Array<string> = []
-	) {
+	constructor(id: string, text: string | null = null, references: Array<string> = [], depth = 0) {
 		this.ID = id;
 		this.text = text;
-		this.refersTo = refersTo;
-		this.referredToBy = referredToBy;
+		this.references = references;
+		this.depth = depth;
 	}
 }
