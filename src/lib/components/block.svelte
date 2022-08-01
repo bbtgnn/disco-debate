@@ -20,7 +20,9 @@
 
 <!--  -->
 
-<div class="flex flex-row flex-nowrap items-stretch justify-start bg-zinc-700">
+<div
+	class="flex flex-row flex-nowrap items-stretch justify-start bg-zinc-700 hover:ring-4 ring-blue-700"
+>
 	<!-- References -->
 	{#if block.references.length}
 		<div class="select-none bg-zinc-600 shrink-0 space-y-1 py-4 px-1">

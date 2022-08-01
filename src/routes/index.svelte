@@ -10,6 +10,7 @@
 	import type { Block } from '$lib/classes/block';
 
 	import Add from 'carbon-icons-svelte/lib/Add.svelte';
+	import { filter } from 'lodash';
 
 	/**
 	 * Block manager setup
@@ -68,6 +69,9 @@
 
 			// Closing window
 			closeAddBlock();
+
+			// Updating column length
+			calcCols();
 		}
 	}
 
@@ -96,27 +100,37 @@
 		references.splice(i, 1);
 		references = references;
 	}
+
+	/**
+	 * Columns management
+	 */
+
+	let cols = 0;
+
+	function calcCols() {
+		if (dataManager.data.blocks.length > 0) {
+			cols = dataManager.getMaxDepth() + 1;
+		} else {
+			cols = 0;
+		}
+	}
+
+	calcCols();
 </script>
 
 <!--  -->
 
 <!-- All the blocks -->
-<div class="flex flex-row flex-nowrap h-screen items-stretch">
-	<!-- List of the blocks -->
-	<div class="p-6 space-y-4 flex flex-col justify-start items-start grow">
-		<!-- Section title -->
-		<h4 class="shrink-0">Blocks</h4>
+<div class="w-screen h-screen flex flex-row flex-nowrap items-stretch">
+	<!--  -->
 
-		<!-- Column container -->
-		<div
-			class="
-				grow overflow-y-scroll
-				flex flex-row flex-nowrap items-stretch justify-start
-			"
-		>
-			<!-- The column -->
-			<div class="w-[500px] space-y-4 pr-4">
-				{#each $data.blocks as block}
+	<!-- Column container -->
+	<div class="grow flex flex-row flex-nowrap justify-start items-stretch overflow-x-scroll">
+		<!-- The columns -->
+		{#each { length: cols } as _, i}
+			{@const blocks = $data.blocks.filter((b) => b.depth == i)}
+			<div class="w-[500px] space-y-4 p-6 overflow-y-scroll shrink-0">
+				{#each blocks as block}
 					<BlockUI
 						{block}
 						on:mouseUp={(e) => {
@@ -125,12 +139,14 @@
 					/>
 				{/each}
 			</div>
-		</div>
+		{/each}
 	</div>
 
 	<!-- Add block panel -->
 	{#if addingBlock}
-		<div class="w-[400px] shrink-0 flex flex-row items-stretch justify-start">
+		<div
+			class="w-[400px] shrink-0 flex flex-row items-stretch justify-start border-l-2 border-l-white"
+		>
 			<Tile light>
 				<div class="p-2 space-y-4">
 					<!-- Title -->

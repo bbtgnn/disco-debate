@@ -57,22 +57,28 @@ export class DataManager {
 	}
 
 	createBlock(text: string | null = null, references: Array<string> = []): Block {
-		// Listing all the depths
-		const depths: Array<number> = [0];
+		// Setting base depth as 0
+		let depth = 0;
 
-		// Get references depth
-		references.forEach((refID) => {
-			const ref = this.getReference(refID);
-			if (ref) {
-				const depth = this.getReferenceDepth(ref);
-				if (depth) {
-					depths.push(depth);
+		// If there are any references
+		if (references.length > 0) {
+			// Get references depth
+			const depths = references.map((refID) => {
+				// If there's a reference and a depth
+				const ref = this.getReference(refID);
+				if (ref) {
+					const depth = this.getReferenceDepth(ref);
+					if (depth) {
+						return depth;
+					}
 				}
-			}
-		});
+				// Else return 0
+				return 0;
+			});
 
-		// Calculating depth (by adding one!)
-		const depth = Math.max(...depths) + 1;
+			// Calculating depth (by adding one!)
+			depth = Math.max(...depths) + 1;
+		}
 
 		return new Block(nanoid(5), text, references, depth);
 	}
@@ -105,5 +111,14 @@ export class DataManager {
 			depths.push(...blockDepths);
 		}
 		return Math.max(...depths);
+	}
+
+	getMaxDepth(): number {
+		if (this.data.blocks.length > 0) {
+			const depths = this.data.blocks.map((b) => b.depth);
+			return Math.max(...depths);
+		} else {
+			return 0;
+		}
 	}
 }
