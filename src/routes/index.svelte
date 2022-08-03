@@ -10,7 +10,7 @@
 	import type { Block } from '$lib/classes/block';
 
 	import Add from 'carbon-icons-svelte/lib/Add.svelte';
-	import { filter } from 'lodash';
+	import { selectedBlock } from '$lib/stores/data';
 
 	/**
 	 * Block manager setup

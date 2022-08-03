@@ -3,16 +3,34 @@
 	import type { Block } from '$lib/classes/block';
 	import { data } from '$lib/stores/data';
 	import { DataManager } from '$lib/classes/dataManager';
+	import { selectedBlock } from '$lib/stores/data';
 
-	const dispatch = createEventDispatcher<{ mouseUp: { selection: Selection | null } }>();
+	//
+
+	export let block: Block;
+
+	//
+
+	const dispatch = createEventDispatcher<{
+		mouseUp: { selection: Selection | null };
+		selected: { self: Block };
+	}>();
+
 	function mouseUp() {
 		dispatch('mouseUp', {
 			selection: window.getSelection()
 		});
 	}
 
-	export let block: Block;
+	function selectBlock() {
+		$selectedBlock = block;
+	}
 
+	function deselectBlock() {
+		$selectedBlock = null;
+	}
+
+	// Retrieving data to display
 	const dataManager = new DataManager($data);
 	let referredToBy = dataManager.getBlockReferences(block.ID);
 	let comments = dataManager.getBlockComments(block.ID);
@@ -21,6 +39,10 @@
 <!--  -->
 
 <div
+	on:mouseover={selectBlock}
+	on:focus={selectBlock}
+	on:mouseleave={deselectBlock}
+	on:blur={deselectBlock}
 	class="flex flex-row flex-nowrap items-stretch justify-start bg-zinc-700 hover:ring-4 ring-blue-700"
 >
 	<!-- References -->
