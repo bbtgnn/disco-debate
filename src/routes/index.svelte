@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { data } from '$lib/stores/data';
+	import { data } from '$lib/stores';
 
 	import { Button, TextArea, Tile } from 'carbon-components-svelte';
 	import BlockUI from '$lib/components/block.svelte';
@@ -10,7 +10,7 @@
 	import type { Block } from '$lib/classes/block';
 
 	import Add from 'carbon-icons-svelte/lib/Add.svelte';
-	import { selectedBlock } from '$lib/stores/data';
+	import { connectedBlocks } from '$lib/stores';
 
 	/**
 	 * Block manager setup

@@ -6,3 +6,4 @@ import { writable } from 'svelte/store';
 
 export const data = writablels<DataStructure>('data', new DataStructure());
 export const selectedBlock = writable<Block | null>(null);
+export const connectedBlocks = writable<Array<Block>>([]);

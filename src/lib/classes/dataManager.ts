@@ -102,6 +102,20 @@ export class DataManager {
 		return _.uniq(blocks);
 	}
 
+	getBlocksCommented(block: Block): Array<Block> {
+		const blocksCommented: Array<Block> = [];
+		block.references.forEach((r) => {
+			const ref = this.getReference(r);
+			if (ref) {
+				const block = this.getBlock(ref.blockID);
+				if (block) {
+					blocksCommented.push(block);
+				}
+			}
+		});
+		return blocksCommented;
+	}
+
 	getBlockDepth(blockID: string): number {
 		const references = this.getBlockReferences(blockID);
 		const depths: Array<number> = [0];
@@ -120,5 +134,14 @@ export class DataManager {
 		} else {
 			return 0;
 		}
+	}
+
+	getConnectedBlocks(block: Block): Array<Block> {
+		const blocks: Array<Block> = [];
+		if (block) {
+			blocks.push(...this.getBlocksCommented(block));
+			blocks.push(...this.getBlockComments(block.ID));
+		}
+		return blocks;
 	}
 }

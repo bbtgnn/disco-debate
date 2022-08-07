@@ -1,13 +1,32 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import type { Block } from '$lib/classes/block';
-	import { data } from '$lib/stores/data';
+	import { data } from '$lib/stores';
 	import { DataManager } from '$lib/classes/dataManager';
-	import { selectedBlock } from '$lib/stores/data';
+	import { selectedBlock, connectedBlocks } from '$lib/stores';
 
 	//
 
 	export let block: Block;
+
+	//
+
+	// Retrieving data to display
+	const dataManager = new DataManager($data);
+	let referredToBy = dataManager.getBlockReferences(block.ID);
+	let comments = dataManager.getBlockComments(block.ID);
+
+	let opacity = false;
+	$: {
+		//
+		if (!$selectedBlock) {
+			opacity = false;
+		}
+		//
+		else {
+			opacity = !($selectedBlock?.ID == block.ID || $connectedBlocks.includes(block));
+		}
+	}
 
 	//
 
@@ -24,16 +43,13 @@
 
 	function selectBlock() {
 		$selectedBlock = block;
+		$connectedBlocks = dataManager.getConnectedBlocks(block);
 	}
 
 	function deselectBlock() {
 		$selectedBlock = null;
+		$connectedBlocks = [];
 	}
-
-	// Retrieving data to display
-	const dataManager = new DataManager($data);
-	let referredToBy = dataManager.getBlockReferences(block.ID);
-	let comments = dataManager.getBlockComments(block.ID);
 </script>
 
 <!--  -->
@@ -44,6 +60,7 @@
 	on:mouseleave={deselectBlock}
 	on:blur={deselectBlock}
 	class="flex flex-row flex-nowrap items-stretch justify-start bg-zinc-700 hover:ring-4 ring-blue-700"
+	class:opacity-40={opacity}
 >
 	<!-- References -->
 	{#if block.references.length}
